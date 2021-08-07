@@ -1,13 +1,16 @@
 const express = require("express");
-function verifyToken(req, res, next) {
+const jwt = require("jsonwebtoken");
+
+module.exports = async (req, res, next) => {
   //get auth header value
-  const bearerHeader = req.headers["authorization"];
-  if (typeof bearerHeader !== "undefined") {
-    const bearer = bearerHeader.split(" ");
-    const bearerToken = bearer[1];
-    req.token = bearerToken;
+  const authHeader = req.headers.authorization;
+
+  if (authHeader) {
+    const token = authHeader.split(" ")[1];
+
+    req.authInfo = jwt.verify(token, "secretkey");
     next();
   } else {
-    res.sendStatus(403);
+    res.sendStatus(401);
   }
-}
+};
