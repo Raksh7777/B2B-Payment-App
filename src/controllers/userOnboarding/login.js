@@ -1,4 +1,5 @@
 const config = require("./../../config/config");
+console.log(config);
 const client = require("twilio")(config.accountSID, config.authToken);
 
 module.exports = async (req, res) => {
@@ -19,6 +20,7 @@ module.exports = async (req, res) => {
       },
     });
   } catch (err) {
+    console.log(err);
     res.status(500).send({
       response: {
         message: "OTP cannot be sent!",
