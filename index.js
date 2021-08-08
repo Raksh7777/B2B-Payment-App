@@ -1,5 +1,6 @@
 //const path=require('path')
 //require('dotenv').config({ path: path.join(__dirname, '.env') })
+const bodyParser = require("body-parser");
 require("dotenv-flow").config();
 const express = require("express");
 const helmet = require("helmet");
@@ -7,6 +8,9 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(helmet());
+
+app.use(bodyParser.json({ limit: "2gb", extended: true }));
+app.use(bodyParser.urlencoded({ limit: "2gb", extended: true }));
 //CORS
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");

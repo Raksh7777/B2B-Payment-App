@@ -7,6 +7,6 @@ const jwtMiddleware = require("./../middlewares/verifyToken");
 router.get("/login", loginHandler);
 router.get("/verify", verifyHandler);
 
-router.post("/signup", signupHandler);
+router.post("/signup", jwtMiddleware, signupHandler);
 
 module.exports = router;
