@@ -14,13 +14,11 @@ module.exports = async (req, res) => {
       });
     if (!twilioResponse.valid) {
       res.status(403).send({
-        response: {
-          message: "OTP invalid!",
-          statusCode: 403,
-          status: "Fail",
-          data: {},
-          error: null,
-        },
+        message: "OTP invalid!",
+        statusCode: 403,
+        status: "Fail",
+        data: {},
+        error: null,
       });
     } else {
       const checkQuery = {
@@ -28,7 +26,8 @@ module.exports = async (req, res) => {
         values: [req.query.phonenumber],
       };
       const userExists = await dbClient.Query(checkQuery);
-      //res.send(userExists)
+      const isReg = userExists.rows[0].is_registered;
+      console.log(isReg);
 
       if (userExists.rowCount === 0) {
         const insertQuery = {
@@ -41,15 +40,13 @@ module.exports = async (req, res) => {
         const resToken = await idToken(user);
 
         res.status(200).send({
-          response: {
-            message: "OTP sent successfully",
-            statusCode: 200,
-            status: "Success",
-            data: { resToken },
-            error: null,
-          },
+          message: "OTP sent successfully",
+          statusCode: 200,
+          status: "Success",
+          data: { resToken, is_Registered: isReg },
+          error: null,
         });
-      } else if (userExists.rowCount > 0) {
+      } else if (userExists.rowCount === 1) {
         const selectQuery = {
           text: "SELECT user_id from users WHERE phone_number=$1",
           values: [req.query.phonenumber],
@@ -63,13 +60,11 @@ module.exports = async (req, res) => {
         // console.log(user)
 
         res.status(200).send({
-          response: {
-            message: "OTP sent successfully",
-            statusCode: 200,
-            status: "Success",
-            data: { resToken },
-            error: null,
-          },
+          message: "OTP verified successfully",
+          statusCode: 200,
+          status: "Success",
+          data: { resToken, is_Registered: isReg },
+          error: null,
         });
       }
     }

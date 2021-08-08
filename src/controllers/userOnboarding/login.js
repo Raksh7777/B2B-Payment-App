@@ -11,24 +11,20 @@ module.exports = async (req, res) => {
         channel: req.query.channel,
       });
     res.status(200).send({
-      response: {
-        message: "OTP sent Successfully",
-        statusCode: 200,
-        status: "Success",
-        data: {},
-        error: null,
-      },
+      message: "OTP sent Successfully",
+      statusCode: 200,
+      status: "Success",
+      data: {},
+      error: null,
     });
   } catch (err) {
     console.log(err);
     res.status(500).send({
-      response: {
-        message: "OTP cannot be sent!",
-        statusCode: 500,
-        status: "Fail",
-        data: {},
-        error: err,
-      },
+      message: "OTP cannot be sent!",
+      statusCode: 500,
+      status: "Fail",
+      data: {},
+      error: err,
     });
   }
 };

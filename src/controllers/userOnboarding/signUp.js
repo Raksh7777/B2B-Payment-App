@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
   try {
     const userId = req.userInfo;
     const getUserQuery = {
-      text: "SELECT * status from users where user_id=$1",
+      text: "SELECT is_Registered from users where user_id=$1",
       values: [userId],
     };
     const getUserQueryResult = await dbClient.Query(getUserQuery);
@@ -17,7 +17,7 @@ module.exports = async (req, res) => {
         response: {
           message: "User can't be registered",
           statusCode: 400,
-          status: "Fail",
+          status: "fail",
           data: {},
           error: null,
         },
@@ -35,7 +35,7 @@ module.exports = async (req, res) => {
           response: {
             message: "User can't be registered",
             statusCode: 400,
-            status: "Fail",
+            status: "fail",
             data: {},
             error: null,
           },
@@ -46,7 +46,7 @@ module.exports = async (req, res) => {
           response: {
             message: "User Registered",
             statusCode: 200,
-            status: "Success",
+            status: "success",
             data: {},
             error: null,
           },
@@ -58,7 +58,7 @@ module.exports = async (req, res) => {
       response: {
         message: "User can't be registered",
         statusCode: 500,
-        status: "Fail",
+        status: "fail",
         data: {},
         error: null,
       },
