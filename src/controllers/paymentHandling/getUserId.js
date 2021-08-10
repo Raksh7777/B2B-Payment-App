@@ -9,23 +9,19 @@ module.exports = async (req, res) => {
     };
     const userDetails = await dbClient.Query(getUserId);
     res.status(200).send({
-      response: {
-        message: "Balance updated successfully",
-        statusCode: 200,
-        status: "Success",
-        data: { ...userDetails.rows[0] },
-        error: null,
-      },
+      message: "Balance updated successfully",
+      statusCode: 200,
+      status: "Success",
+      data: { ...userDetails.rows[0] },
+      error: null,
     });
   } catch (error) {
     res.status(500).send({
-      response: {
-        message: "User can't be registered",
-        statusCode: 500,
-        status: "Fail",
-        data: {},
-        error: null,
-      },
+      message: "User can't be registered",
+      statusCode: 500,
+      status: "Fail",
+      data: {},
+      error: null,
     });
   }
 };

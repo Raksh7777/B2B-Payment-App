@@ -2,7 +2,7 @@ const dbClient = require("./../../db/utils");
 
 module.exports = async (req, res) => {
   try {
-    let userId = req.user.id;
+    let userId = req.authInfo.id;
     const paymentId = req.body.paymentId;
     const paymentRequestQuery = {
       text: "SELECT * from payment_details where payment_id=$1",
@@ -10,33 +10,31 @@ module.exports = async (req, res) => {
     };
 
     const getPaymentRequest = await dbClient.Query(paymentRequestQuery);
-    if (getPaymentRequest[0].status === "Completed") {
+    console.log(getPaymentRequest);
+    //enum payment_state []
+    if (getPaymentRequest.rows[0].payment_state === "Completed") {
       res.status(200).send({
-        response: {
-          message: "Payment Already done",
-          statusCode: 200,
-          status: "Success",
-          data: {},
-          error: null,
-        },
+        message: "Payment Already done",
+        statusCode: 200,
+        status: "Success",
+        data: {},
+        error: null,
       });
     } else {
-      const payment = getPaymentRequest[0].amount;
+      const payment = getPaymentRequest.rows[0].amount;
       const getAmountQuery = {
         text: "SELECT balance from users where user_id=$1",
         values: [userId],
       };
       const getBalance = await dbClient.Query(getAmountQuery);
-      const balance = getBalance[0].balance;
+      const balance = getBalance.rows[0].balance;
       if (balance < payment) {
         res.status(200).send({
-          response: {
-            message: "Not enough balance",
-            statusCode: 200,
-            status: "Success",
-            data: {},
-            error: null,
-          },
+          message: "Not enough balance",
+          statusCode: 200,
+          status: "Success",
+          data: {},
+          error: null,
         });
       } else {
         const updateBalanceQuery = {
@@ -45,17 +43,16 @@ module.exports = async (req, res) => {
         };
         await dbClient.Query(updateBalanceQuery);
         res.status(200).send({
-          response: {
-            message: "Payment Request Sent Successfully",
-            statusCode: 200,
-            status: "Success",
-            data: {},
-            error: null,
-          },
+          message: "Payment Request Sent Successfully",
+          statusCode: 200,
+          status: "Success",
+          data: {},
+          error: null,
         });
       }
     }
   } catch (e) {
+    console.log(e);
     res.status(500).send(e);
   }
 };
