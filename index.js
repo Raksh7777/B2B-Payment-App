@@ -12,12 +12,18 @@ app.use(helmet());
 app.use(bodyParser.json({ limit: "2gb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "2gb", extended: true }));
 //CORS
+var cors = require("cors");
+app.use(cors());
+
+// use it before all route definitions
+
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
   );
+
   next();
 });
 app.get("/", (req, res) => res.send(`<h1> Hello from node.js</h1>`));
