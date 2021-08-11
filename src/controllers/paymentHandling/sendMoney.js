@@ -37,16 +37,21 @@ module.exports = async (req, res) => {
           error: null,
         });
       } else {
+        const updatePaymentState = {
+          text: "UPDATE payment_details set payment_state=$1 where payment_id=$2",
+          values: ["PAYMENT_COMPLETE", paymentId],
+        };
+        dbClient.Query(updatePaymentState);
         const updateBalanceQuery = {
-          text: "UPDATE users set balance=balance-$1 where user_id=$2",
+          text: "UPDATE users set balance=balance-$1 where user_id=$2 returning balance",
           values: [payment, userId],
         };
-        await dbClient.Query(updateBalanceQuery);
+        const updatedBalance = await dbClient.Query(updateBalanceQuery);
         res.status(200).send({
-          message: "Payment Request Sent Successfully",
+          message: "Money Sent Successfully",
           statusCode: 200,
           status: "Success",
-          data: {},
+          data: { balance: updatedBalance.rows[0].balance },
           error: null,
         });
       }

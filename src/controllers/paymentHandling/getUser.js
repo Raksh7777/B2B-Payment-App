@@ -8,13 +8,14 @@ module.exports = async (req, res) => {
       values: [userId],
     };
     const user = await dbClient.Query(getUserQuery);
+    console.log("user", user);
     const getPaymentRequestQuery = {
-      text: "SELECT sender_id,amount,payment_state from payment_details where receiver_id=$1",
+      text: "SELECT users.user_name,users.phone_number,payment_id,sender_id,amount,payment_state,payment_details.created_at from payment_details  INNER JOIN users on payment_details.receiver_id = users.user_id where receiver_id=$1",
       values: [userId],
     };
     const getPaymentResponse = await dbClient.Query(getPaymentRequestQuery);
     const paymentRequestSentQuery = {
-      text: "SELECT receiver_id,amount,payment_state from payment_details where sender_id=$1",
+      text: "SELECT users.user_name,users.phone_number,payment_id,sender_id,amount,payment_state,payment_details.created_at from payment_details  INNER JOIN users on payment_details.receiver_id = users.user_id where sender_id=$1",
       values: [userId],
     };
     const paymentRequestSent = await dbClient.Query(paymentRequestSentQuery);
@@ -23,7 +24,9 @@ module.exports = async (req, res) => {
       statusCode: 200,
       status: "Success",
       data: {
-        name: user.rows[0].name,
+        name: user.rows[0].user_name,
+        phoneNumber: user.rows[0].phone_number,
+        balance: user.rows[0].balance,
         paymentRequestSent: paymentRequestSent.rows,
         paymentRequestReceived: getPaymentResponse.rows,
       },

@@ -1,5 +1,5 @@
 const config = require("./../../config/config");
-console.log(config);
+//console.log(config);
 const client = require("twilio")(config.accountSID, config.authToken);
 
 module.exports = async (req, res) => {

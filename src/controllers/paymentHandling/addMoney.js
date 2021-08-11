@@ -5,15 +5,15 @@ module.exports = async (req, res) => {
     let userId = req.authInfo.id;
     let money = req.body.money;
     const addMoneyQuery = {
-      text: "UPDATE users set balance=balance+$1 where user_id=$2",
+      text: "UPDATE users set balance=balance+$1 where user_id=$2 returning balance",
       values: [money, userId],
     };
-    dbClient.Query(addMoneyQuery);
+    const balanceUpdate = await dbClient.Query(addMoneyQuery);
     res.status(200).send({
       message: "Balance updated successfully",
       statusCode: 200,
       status: "Success",
-      data: {},
+      data: { balance: balanceUpdate.rows[0].balance },
       error: null,
     });
   } catch (error) {
