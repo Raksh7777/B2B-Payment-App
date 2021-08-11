@@ -32,7 +32,7 @@ module.exports = async (req, res) => {
       if (userExists.rowCount === 0) {
         const insertQuery = {
           text: "INSERT INTO users(phone_number)VALUES($1) RETURNING user_id",
-          values: [req.query.phonenumber],
+          values: [req.query.phonenumber.trim()],
         };
         const writeUser = await dbClient.Query(insertQuery);
 
