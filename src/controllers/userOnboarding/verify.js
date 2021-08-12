@@ -38,6 +38,7 @@ module.exports = async (req, res) => {
 
         const user = writeUser.rows[0].user_id;
         const resToken = await idToken(user);
+        console.log(resToken);
 
         res.status(200).send({
           message: "OTP sent successfully",

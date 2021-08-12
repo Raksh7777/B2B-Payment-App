@@ -9,8 +9,9 @@ module.exports = async (req, res) => {
     };
     console.log("query", receiverIDQuery);
     const getReceiverId = await dbClient.Query(receiverIDQuery);
-    console.log(getReceiverId);
-
+    //console.log(getReceiverId);
+    console.log(userId);
+    console.log(getReceiverId.rows[0].user_id);
     const paymentRequestQuery = {
       text: "INSERT INTO payment_details(sender_id,receiver_id,amount,payment_state ) values($1,$2,$3,$4)",
       values: [
