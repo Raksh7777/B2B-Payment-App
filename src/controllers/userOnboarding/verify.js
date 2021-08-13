@@ -26,17 +26,20 @@ module.exports = async (req, res) => {
         values: [req.query.phonenumber],
       };
       const userExists = await dbClient.Query(checkQuery);
-      const isReg = userExists.rows[0].is_registered;
-      console.log(isReg);
+      //console.log(userExists);
+      // if (userExists.rows != []) {
+      //   const isReg = userExists.rows[0].is_registered;
+      // } else isReg = false;
 
       if (userExists.rowCount === 0) {
         const insertQuery = {
-          text: "INSERT INTO users(phone_number)VALUES($1) RETURNING user_id",
+          text: "INSERT INTO users(phone_number)VALUES($1) RETURNING user_id,is_registered",
           values: [req.query.phonenumber.trim()],
         };
         const writeUser = await dbClient.Query(insertQuery);
 
         const user = writeUser.rows[0].user_id;
+        const isReg = writeUser.rows[0].is_registered;
         const resToken = await idToken(user);
         console.log(resToken);
 
@@ -49,12 +52,13 @@ module.exports = async (req, res) => {
         });
       } else if (userExists.rowCount === 1) {
         const selectQuery = {
-          text: "SELECT user_id from users WHERE phone_number=$1",
+          text: "SELECT user_id,is_registered from users WHERE phone_number=$1",
           values: [req.query.phonenumber],
         };
         const existingUser = await dbClient.Query(selectQuery);
 
         const user = existingUser.rows[0].user_id;
+        isReg = existingUser.rows[0].is_registered;
         const resToken = await idToken(user);
         console.log(resToken);
 
